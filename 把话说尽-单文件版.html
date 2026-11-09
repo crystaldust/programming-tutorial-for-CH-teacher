@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>把话说尽 · 一个语文老师的编程课</title>
+<style>
+/* 把话说尽 · 一个语文老师的编程课
+   样式说明：全部使用系统字体，不加载任何外部资源，断网也能正常显示。 */
+
+:root {
+  --paper: #fbf8f1;
+  --paper-2: #f4efe3;
+  --ink: #221f1a;
+  --ink-2: #5a5348;
+  --ink-3: #8c8477;
+  --rule: #e0d8c6;
+  --accent: #9c3b2c;
+  --mark: rgba(156, 59, 44, 0.14);
+  --strong: #14110b;
+  --code-bg: #f2ecdd;
+  --measure: 33em;
+  --serif: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC",
+           "Times New Roman", "STSong", "SimSun", serif;
+  --mono: "SF Mono", "SFMono-Regular", Menlo, Consolas, "Courier New", monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #191714;
+    --paper-2: #221f1a;
+    --ink: #e8e2d6;
+    --ink-2: #b0a799;
+    --ink-3: #867d6f;
+    --rule: #332e27;
+    --accent: #d4816e;
+    --mark: rgba(212, 129, 110, 0.18);
+    --strong: #fffaf0;
+    --code-bg: #241f19;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.95;
+  letter-spacing: 0.012em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── 顶栏 ───────────────────────────────── */
+
+.progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0;
+  background: var(--accent);
+  z-index: 30;
+  transition: width 80ms linear;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.72rem 1.2rem;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.76rem;
+  letter-spacing: 0.18em;
+}
+
+.topbar .brand {
+  color: var(--ink-2);
+  letter-spacing: 0.26em;
+}
+.topbar .brand:hover { color: var(--accent); text-decoration: none; }
+
+.topbar nav { display: flex; gap: 1.1rem; }
+.topbar nav a { color: var(--ink-3); }
+.topbar nav a:hover { color: var(--accent); text-decoration: none; }
+.topbar nav a.on { color: var(--accent); }
+
+/* ── 版心 ───────────────────────────────── */
+
+.wrap {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 0 1.4rem;
+}
+
+main { padding-bottom: 4rem; }
+
+/* ── 封面 ───────────────────────────────── */
+
+.cover {
+  padding: clamp(3rem, 12vh, 7rem) 0 3rem;
+  text-align: center;
+}
+
+.cover .kicker {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.34em;
+  color: var(--accent);
+  text-indent: 0.34em;
+}
+
+.book-title {
+  margin: 0.7em 0 0;
+  font-size: clamp(3rem, 11vw, 5.2rem);
+  line-height: 1.12;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-indent: 0.09em;
+}
+
+.book-sub {
+  margin: 1.1em 0 0;
+  font-size: 0.95rem;
+  letter-spacing: 0.2em;
+  color: var(--ink-2);
+  text-indent: 0.2em;
+}
+
+.rule-mark {
+  width: 2.2rem;
+  height: 1px;
+  margin: 2.2rem auto;
+  background: var(--accent);
+  opacity: 0.55;
+}
+
+.tagline {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 2.15;
+  color: var(--ink-2);
+}
+
+.lead {
+  margin: 1.6em auto 0;
+  max-width: min(26rem, 100%);
+  font-size: 0.95rem;
+  line-height: 2;
+  color: var(--ink-2);
+}
+
+.cta {
+  display: inline-block;
+  margin-top: 2.4rem;
+  padding: 0.72em 2.2em;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: 0.86rem;
+  letter-spacing: 0.2em;
+  border-radius: 2px;
+  transition: background 160ms ease, color 160ms ease;
+}
+.cta:hover {
+  background: var(--accent);
+  color: var(--paper);
+  text-decoration: none;
+}
+
+/* ── 目录 ───────────────────────────────── */
+
+.toc { padding-top: 2rem; }
+
+.toc > h2 {
+  margin: 0 0 2rem;
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.34em;
+  color: var(--ink-3);
+  text-align: center;
+}
+
+.part { margin: 0 0 2.8rem; }
+
+.part > h3 {
+  margin: 0 0 0.9rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+}
+
+.part ol { margin: 0; padding: 0; list-style: none; }
+
+.part li { border-bottom: 1px dotted var(--rule); }
+.part li:last-child { border-bottom: 0; }
+
+.row {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.66rem 0;
+  color: var(--ink);
+  font-size: 0.98rem;
+}
+a.row:hover { text-decoration: none; }
+a.row:hover .t { color: var(--accent); }
+
+.row .n {
+  min-width: 2.1em;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.row .t { flex: 1; }
+.row .badge {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+}
+
+.pending { opacity: 0.46; }
+.pending .t { color: var(--ink-2); }
+
+.project {
+  margin: 0.9rem 0 0;
+  padding-left: 3.1rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  font-style: italic;
+}
+
+.colophon {
+  margin-top: 4rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  text-align: center;
+  line-height: 2.2;
+}
+
+/* ── 章节页 ─────────────────────────────── */
+
+.chapter-head {
+  padding: clamp(2.6rem, 8vh, 4.5rem) 0 0;
+}
+
+.chapter-head .part {
+  margin: 0 0 1.1rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: var(--ink-3);
+}
+
+.chapter-head h1 {
+  margin: 0;
+  font-size: clamp(1.62rem, 5.2vw, 2.1rem);
+  line-height: 1.55;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.chapter-head h1 .num {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+}
+
+.chapter-head .meta {
+  margin: 1.4rem 0 0;
+  padding-bottom: 1.6rem;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+}
+
+/* ── 正文 ───────────────────────────────── */
+
+article { padding-top: 1.2rem; }
+
+article p {
+  margin: 0 0 0.72em;
+  text-indent: 2em;
+}
+
+article > h2:first-child { margin-top: 1.1em; }
+
+article h2 {
+  margin: 2.5em 0 1em;
+  font-size: 1.28em;
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  page-break-after: avoid;
+}
+
+article h2::before {
+  content: "";
+  display: inline-block;
+  width: 0.4em;
+  height: 0.4em;
+  margin-right: 0.62em;
+  vertical-align: 0.14em;
+  background: var(--accent);
+  border-radius: 1px;
+}
+
+article h3 {
+  margin: 2em 0 0.7em;
+  font-size: 1.06em;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+article strong {
+  font-weight: 700;
+  color: var(--strong);
+}
+
+article em { font-style: normal; color: var(--ink-2); }
+
+article blockquote {
+  margin: 1.7em 0;
+  padding: 0.1em 0 0.1em 1.15em;
+  border-left: 2px solid var(--accent);
+  color: var(--ink-2);
+  font-size: 0.96em;
+}
+article blockquote p { text-indent: 0; margin: 0.45em 0; }
+
+article p.li {
+  position: relative;
+  padding-left: 1.25em;
+  text-indent: 0;
+}
+article p.li::before {
+  content: "";
+  position: absolute;
+  left: 0.3em;
+  top: 0.92em;
+  width: 0.3em;
+  height: 0.3em;
+  background: var(--accent);
+  border-radius: 50%;
+  opacity: 0.7;
+}
+
+article hr {
+  margin: 2.6em 0;
+  border: 0;
+  height: 1px;
+  background: var(--rule);
+}
+
+article code {
+  padding: 0.12em 0.36em;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background: var(--code-bg);
+  font-family: var(--mono);
+  font-size: 0.86em;
+  letter-spacing: 0;
+}
+
+article pre {
+  margin: 1.5em 0;
+  padding: 1em 1.15em;
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  background: var(--code-bg);
+  line-height: 1.75;
+  -webkit-overflow-scrolling: touch;
+}
+
+article pre code {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 0.83em;
+}
+
+article table {
+  width: 100%;
+  margin: 1.6em 0;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+article th, article td {
+  padding: 0.55em 0.7em;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+article th { font-weight: 600; color: var(--ink-2); }
+
+/* ── 翻页 ───────────────────────────────── */
+
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.2rem;
+  margin-top: 3.6rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.8rem;
+}
+
+.pager a {
+  display: block;
+  max-width: 46%;
+  color: var(--ink-2);
+  letter-spacing: 0.04em;
+}
+.pager a:hover { color: var(--accent); text-decoration: none; }
+.pager .dir {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  color: var(--ink-3);
+  margin-bottom: 0.3em;
+}
+.pager .next { text-align: right; margin-left: auto; }
+
+/* ── 手机 ───────────────────────────────── */
+
+@media (max-width: 640px) {
+  body { font-size: 17.5px; line-height: 1.9; }
+  .wrap { padding: 0 1.15rem; }
+  .topbar { font-size: 0.72rem; padding: 0.68rem 1.15rem; }
+  .topbar nav { gap: 0.85rem; }
+  .book-title { font-size: clamp(2.6rem, 15vw, 3.4rem); }
+  article h2 { margin-top: 2.1em; }
+  .pager { flex-direction: column; gap: 1rem; }
+  .pager a { max-width: 100%; }
+  .pager .next { text-align: left; margin-left: 0; }
+}
+
+/* ── 打印 ───────────────────────────────── */
+
+@media print {
+  .topbar, .progress, .pager, .cta, .colophon { display: none; }
+  body { background: #fff; color: #000; font-size: 11pt; line-height: 1.85; }
+  article h2 { page-break-after: avoid; }
+  article pre, article blockquote, article table { page-break-inside: avoid; }
+  a { color: #000; }
+}
+
+</style>
+<style>
+/* 单文件版的章节分隔 */
+article.single { border-top: 1px solid var(--rule); margin-top: 3.5rem; padding-top: 1rem; }
+article.single:first-of-type { border-top: 0; }
+.topbar nav { display: none; }
+</style>
+</head>
+<body class="chapter">
+<header class="topbar">
+  <a class="brand" href="index.html">把话说尽</a>
+  <nav><a href="index.html" class="on">目录</a><a href="ch01.html">开始读</a></nav>
+</header>
+
+<main class="wrap">
+<section class="cover">
+  <p class="kicker">写给一位高中语文老师</p>
+  <h1 class="book-title">把话说尽</h1>
+  <p class="book-sub">一个语文老师的编程课</p>
+  <div class="rule-mark"></div>
+  <p class="tagline">语文求「言有尽而意无穷」。<br>编程求「意无穷而言必须尽」。</p>
+</section>
+
+<article id="about" class="single">
+<header class="chapter-head"><p class="part">序</p><h1><span class="num"></span>为什么是我来教你</h1></header>
+<p>你不认识我。但我知道你的一些事。</p>
+<p>我知道你能在四十人的教室里，听出第三排那个男生其实没背下来——他念得一字不错，只是不敢抬眼。</p>
+<p>我知道你改一本作文要八分钟。一个班五十本，就是六个多小时。这六个多小时里，你还要回家长的消息，还要想明天的早读讲什么。</p>
+<p>我也知道，你大概从来没有想过，有一天会翻开一本讲编程的书。</p>
+<p>所以这一页，我想先拆掉三堵墙。</p>
+<h2 id="s1">误会一：学编程要数学好</h2>
+<p>这本书里，不会出现一个你看不懂的数学符号。</p>
+<p>你需要的全部数学能力是：会比较大小，会数数，知道什么叫“一半”。就这三样。</p>
+<p>你之所以觉得自己“数学不好，所以学不会编程”，是因为你见过的所有编程材料，都是写给喜欢数学的人看的。它们用数列讲循环，用素数讲判断，用斐波那契讲递归——不是因为这些例子更好，是因为写书的人自己喜欢。</p>
+<p>这本书用作文、诗词、病句、成绩单讲。不是因为它更简单，是因为它更像你。</p>
+<h2 id="s2">误会二：编程是年轻人的事</h2>
+<p>你每天在用的这门语言，比任何一门编程语言都复杂。</p>
+<p>汉语有歧义、有省略、有言外之意、有一词多义、有“下雨天留客天留我不留”。你不但会用，还能站在讲台上，把它拆开讲给一群注意力只有七分钟的人听懂。这件事的难度，超过这本书里任何一个章节。</p>
+<p>至于“年龄”——你三十岁以后学会的东西，新的教材、新的考纲、新的班级管理办法、怎么跟一个抑郁的学生说话，哪一样不比学编程难？</p>
+<p>学编程真正消耗的，是忍受“我不知道”的耐心。而你在等一个学生开窍这件事上，耐性惊人。</p>
+<h2 id="s3">误会三：我这辈子只能当一个技术的使用者</h2>
+<p>使用者和制作者之间，只隔着一个下午。</p>
+<p>这个下午之后，世界会变一点点：你不再只能接受别人做好的东西，你可以做一个很小的、只给你自己用的东西。</p>
+<p>这件事的意义，比“学会一门技能”大得多。<strong>当你只会用的时候，你只能接受别人替你做好的决定。当你能做一个小的，你就能决定“这件事到底该怎么办”。</strong></p>
+<h2 id="s4">这本书真正想说的</h2>
+<p>一句话：</p>
+<blockquote><p>语文求“言有尽而意无穷”。编程求“意无穷而言必须尽”。</p></blockquote>
+<p>你教了这么多年书，一直在告诉学生：好文章要有余味，话不能说尽，说尽了就没有想头了。这是对的。这是文学。</p>
+<p>而编程，是一门把话说尽的手艺。每一个“大概”“稍微”“你懂的”，都必须被替换成一个准确的、可以执行的句子。否则机器就停在那儿，一动不动。</p>
+<p>所以这本书要教你的，不是一门新技术，是一种新的说话方式。</p>
+<p>你会发现，学会它之后，你上课举的例子会更准，你写的要求会更清楚，你跟家长解释一件事会更快。因为“把话说尽”这件事，一旦练成，是收不回去的。</p>
+<h2 id="s5">这本书怎么读</h2>
+<p>三种读法，你挑一种：</p>
+<p class="li"><strong>全线</strong>：从第一章读到第二十二章，一周一章，五个月。适合真的想学会的人。</p>
+<p class="li"><strong>实用线</strong>：第一到第四章，然后第十、十一章，然后第十七到十九章。八周，够用，能解决你八成的重复劳动。</p>
+<p class="li"><strong>教书线</strong>：第一到第四章，然后第十五、十六章。目标不是自己写程序，是能给学生开一门课。</p>
+<p>每章都不长，一个晚自习读完，下一个晚自习做完。每个“卡住了”的小节，都写着最常见的三个错误——你先看那一段，再动手。</p>
+<h2 id="s6">这本书不教什么</h2>
+<p>说清楚不教什么，比说清楚教什么更重要。</p>
+<p class="li">不教数学。一次也不。</p>
+<p class="li">不教算法竞赛、不教底层原理、不教性能优化。</p>
+<p class="li">不教前端花活。界面够用就行。</p>
+<p class="li">不承诺转行，不承诺高薪。</p>
+<p class="li">不假装学习是轻松的。<strong>会卡住，会烦，会想放弃</strong>——书里会明说，并且给出一个具体的动作：卡住二十分钟，就站起来。</p>
+<h2 id="s7">最后</h2>
+<p>说句实话。</p>
+<p>这本书不会让你变聪明。它只会给你多一种笨办法：把一件你本来要用手做五十遍的事，写成一段话，让机器替你做。</p>
+<p>等你第一次这么干成的时候，你会有一种很奇怪的感受。不是“我学会编程了”，而是——</p>
+<p>“原来这件事，本来就不该由我来做。”</p>
+<p>那种感受，值得你花五个晚上。</p>
+<p><em>写于二〇二六年秋，一个刚批完五十本作文的晚上。</em></p>
+</article>
+<article id="ch01" class="single">
+<header class="chapter-head"><p class="part">第一部　字：让机器认识文字</p><h1><span class="num">第一章</span>计算机是个不猜的读者</h1></header>
+<h2 id="s1">十点四十</h2>
+<p>晚上十点四十。最后一本作文合上，红笔帽扣回去，右手中指侧面有一道浅浅的印子。</p>
+<p>白天教研组长说了一句话：这次月考，全年级作文里“的、地、得”用错的比例，高得离谱。</p>
+<p>你想知道，到底有多离谱。</p>
+<p>于是你把五十本作文重新摊开，从第一本开始，一行一行看。看到“慢慢地走过”记一笔，看到“飞快的跑”再记一笔。四十分钟后，你得到一个大概的数字，和一双酸胀的眼睛。</p>
+<p>而且你并不太确定它对——数到第三十一本的时候，你接了个家长的电话。</p>
+<p>这个晚上你做的事，叫人工统计。它的问题是：慢，累，而且不可靠。</p>
+<p>但请你回头看一遍，刚才那四十分钟，你做的事情是什么形状的：</p>
+<p>你心里有一条规则（“地”后面多半跟动词，“的”后面多半跟名词——大概如此）；你把这条规则，应用到一篇又一篇作文上；你在心里累加结果。</p>
+<p>这个形状，就是程序。</p>
+<h2 id="s2">机器能替你做的，只有一件事</h2>
+<p>不是思考，不是理解，不是“懂”。</p>
+<p>是<strong>重复</strong>。</p>
+<p>它不懂“乡愁”是什么。但它可以不知疲倦地数一数，这五十篇作文里“乡”字出现了多少次。一次不漏，一次不烦，数到第五十篇的时候和数第一篇的时候一样清醒。</p>
+<p>“不知疲倦”这四个字，在人类这里是稀缺品，在机器那里是出厂设置。</p>
+<p>所以编程的本质，不是让机器变聪明。是<strong>把你脑子里那条规则，翻译成它能执行的话</strong>。</p>
+<p>而翻译，是要讲条件的。</p>
+<h2 id="s3">它是个不猜的读者</h2>
+<p>你这些年练出来最厉害的本事之一，是听出学生没说出口的话。</p>
+<p>一个男生站起来念“寒蝉凄切，对长亭晚”，念到“晚”字声音发虚，你就知道他昨晚没睡好，或者他没背。一个女生交上来的作文，题目写“我的父亲”，第一段写了三百字她家楼下的梧桐树，你就知道她父亲大概不在家。</p>
+<p>这种能力叫读言外之意。它是语文老师的职业本能，也是一个人让人觉得温暖的根本原因。</p>
+<p>现在，请你把它暂时关掉。</p>
+<p>因为你要面对的这个读者，一点言外之意都读不出来。而且它不觉得尴尬，不觉得你在暗示，不觉得自己应该体贴你。你说什么，它就是什么。</p>
+<p>举个你会笑的例子。</p>
+<p>你对课代表说：“把这周的作文收上来，放我桌上。”</p>
+<p>课代表会自己解决一系列你根本没说的细节：哪一周，当然是这周，周一到周五；哪些作文，当然是这周布置的那一篇；收上来按什么顺序放，他大概会按小组；如果有人没交怎么办，他会跟你说。</p>
+<p>计算机不会。它会停在第一个问题那里，然后告诉你：你没有告诉我要收哪一种。</p>
+<p>这就是它全部的性格。它不笨，它只是<strong>不猜</strong>。</p>
+<p>于是有了三条规矩。听上去像写作课的要求，其实是编程的全部纪律。</p>
+<p><strong>一、话要一句一句说。</strong></p>
+<p>机器从上往下读，读完一行做一行，不跳读，不回头。你不能像写文章那样先埋一个伏笔，到最后一段再收。你要按它将要发生的顺序，一件一件说。</p>
+<p><strong>二、一个词只能有一个意思。</strong></p>
+<p>你写“稍微缩短一点”，学生知道是删掉两句话。机器不知道“稍微”是多少。你必须说：删掉最后 20 个字，或者删掉第三个句号之后的所有内容。</p>
+<p>你写“大概三十篇”，机器会问你三十篇是哪三十篇。</p>
+<p>在这门语言里，没有“稍微”，没有“大概”，没有“那个”。<strong>模糊不是风格，模糊是故障。</strong></p>
+<p><strong>三、你没说的，它不会替你想。</strong></p>
+<p>文章的美，一半在留白。钱起写“曲终人不见，江上数峰青”，一曲终了，人散了，他只给你五个字：江上数峰青。剩下的全是白的，白得让人心里一空。</p>
+<p>程序恰恰相反。<strong>留白的地方，它不会替你想，它会停在那里，或者更糟——它按自己最笨的理解往下走。</strong></p>
+<p>所以，学编程不是学一门新技术。</p>
+<p>是学一种新的说话方式：把话说尽。</p>
+<p>以后你会常常想起这个说法。当你写下一行代码，发现它跑出来一个荒唐的结果，多半是因为你在某个地方留了一片白，而机器老老实实地从这片白里走了过去。</p>
+<h2 id="s4">第一句话</h2>
+<p>现在动手。安装 Python 的步骤在附录 A，跟着做就行，不用理解。</p>
+<p>（如果你今天实在不想装，可以先搜一个“在线运行 Python”的网页试手。但最终还是要装到自己电脑上——那是你的厨房，别老去别人的厨房做饭。）</p>
+<p>打开编辑器，敲下这一行：</p>
+<pre><code class="language-python">print(&quot;同学们，把书翻到第四十七页。&quot;)</code></pre>
+<p>运行。</p>
+<p>屏幕上出现这句话。</p>
+<p>就这么简单，但值得停三秒：<strong>刚才有一个东西，按照你的意思，说了一句你的话。</strong></p>
+<p><code>print</code> 这个词，字面意思是“打印”，但你可以把它理解成“说出来给人看”。它后面跟着一对括号，括号里是你要说的内容。内容要用引号包起来。</p>
+<p>引号在这里的作用，和它在文章里的作用其实是一样的：<strong>引号里的东西是被引用的，不是作者在说话。</strong> 没有引号，机器会以为你在给它下命令；有了引号，它才知道这只是一串字。</p>
+<p>现在你会遇到今晚的第一个坑，而且几乎一定会遇到：</p>
+<p><strong>中文引号。</strong></p>
+<p>Python 只认 <code>"</code> 这种直的英文引号，不认 <code>“”</code> 这种弯的中文引号。你的输入法默认是中文，所以你打出来的第一个引号，多半是错的。</p>
+<p>然后你会看到一个红色的 <code>SyntaxError</code>，一堆英文，看起来像在骂你。</p>
+<p>这不是你笨。这是所有中文使用者学编程的第一课，无一例外。<strong>你只是第一次遇到“中文和英文的标点在机器眼里是两个东西”这件事。</strong></p>
+<p>把它记下来。附录 B 里，这条排在第一位。</p>
+<h2 id="s5">给万物一个称呼</h2>
+<p>第二件事：给东西起名字。</p>
+<p>这件事你太熟了。同一句话里，一个人可以是“先帝”，可以是“陛下”，可以是“刘备”，可以是“昭烈帝”。为什么换着叫？因为场合不同，关系不同，说话的人站的位置不同。</p>
+<p>名字是给人用的，不是给东西用的。</p>
+<p>编程里的变量，就是给一个东西起一个代号。起了之后，你不必每次都把东西本身搬出来，你说代号，它就知道是谁。</p>
+<pre><code class="language-python">line = &quot;床前明月光&quot;
+print(line)
+print(line)
+print(line)</code></pre>
+<p>三行诗。</p>
+<p>注意那个等号。它在编程里不念“等于”，念“<strong>赋值</strong>”——把右边的东西，放进左边的名字里。念“等于”你会糊涂，因为 <code>a = a + 1</code> 这句话，在数学里是错的，在编程里天经地义：把 a 加上 1，再放回 a 里去。</p>
+<p>现在，一个问题。</p>
+<p>如果要一百遍呢？</p>
+<p>你大概会想：复制粘贴一百行。可以，能跑。</p>
+<p>但假设写完你忽然发现，“床前明月光”应该改成“床前看月光”——这是《静夜思》在更早版本里的样子，一字之差，整首诗的意味就变了。你要改一百次。</p>
+<p><strong>凡是要改一百次的地方，就一定有更好的写法。</strong></p>
+<p>那个更好的写法叫“循环”，在第四章。</p>
+<p>今天你只需要记住这种烦。真的烦一下，比听我讲十句都有用。这本书里所有重要的东西，我都会先让你烦一次，再给你。</p>
+<h2 id="s6">第一次真正有用</h2>
+<p>好，现在做一件你会真的用上的事。</p>
+<p>数字数。</p>
+<p>高中作文要求不少于 800 字，判卷的时候按格子数，标点占一格。你数了太多年了。</p>
+<pre><code class="language-python">zuowen = &quot;把你的作文原文粘贴到这里&quot;
+print(len(zuowen))</code></pre>
+<p><code>len</code> 是 length 的缩写。它数这段文字有多少个字符。</p>
+<p>跑一下，看看那个数字。</p>
+<p>然后你会发现一件很有意思的事：<strong>它数出来的，差不多就是你数格子的结果。</strong> 因为标点在机器眼里也是一个字符，和汉字一样，各占一个位置。</p>
+<p>这个巧合会让你高兴一下——它数的，正好是你想数的那个东西。</p>
+<p>但只高兴一下。</p>
+<p>因为空格和换行也算。你从 Word 里复制出来的一段文字，末尾常常带着换行，中间可能还有多余的空格，这些都会被算进去。所以你数出来 812，格子上可能是 809。</p>
+<p>这就是你第一次遇到“机器太老实”的麻烦。</p>
+<p>请把这句话记住，它会陪你走完整本书：</p>
+<blockquote><p><strong>它给的答案，永远是你问的那个问题的答案，而不是你想问的那个问题的答案。</strong></p></blockquote>
+<p>你以为你在问“这篇作文够不够 800 字”，它听到的是“这串字符有多少个”。这两个问题在 99% 的时候答案一样，在剩下的 1% 里，会让你困惑一整个晚上。</p>
+<p>程序员的功夫，一大半花在把“我想问的”翻译成“我该问的”。</p>
+<h2 id="s7">数一个字的次数</h2>
+<p>最后一个动作，今晚就收工。</p>
+<p>你想知道这五十篇作文里，“然后”用了多少次。上次你在课堂上说过一次，学生笑了，但笑完照旧。</p>
+<pre><code class="language-python">print(zuowen.count(&quot;然后&quot;))</code></pre>
+<p><code>count</code> 是“数”的意思。<code>zuowen.count(“然后”)</code>，读作：在这段叫 zuowen 的文字里，数一数“然后”出现了几次。</p>
+<p>换成“的”，换成“其实”，换成“我觉得”，换成任何一个你想抓的口头禅。</p>
+<p>一个数字出来了。</p>
+<p>如果这个数字是 43，你可以明天把它写在黑板上，什么都不用说。学生会自己脸红。</p>
+<p><strong>程序不必伟大，只要今天有用。</strong></p>
+<p>这是我对整本书唯一的野心：你每学一章，当天就能拿一样东西回教室。</p>
+<p>（顺便说一句，<code>count</code> 后面为什么带个点，为什么长得像 <code>zuowen.count</code> 而不是 <code>count(zuowen)</code>——第三章会讲。今天你先用，能用就行。这本书的一个原则是：<strong>先用，后懂。</strong> 就像学生先会背“床前明月光”，两年后才懂什么叫思乡。）</p>
+<h2 id="s8">一句题外话：学编程最像学文言文的地方</h2>
+<p>一开始，每个字都认识，连起来不懂。</p>
+<p>你逐字翻译，翻得磕磕绊绊，还要查注释。你甚至怀疑自己是不是不适合学这个。</p>
+<p>但是读得多了，某一天，一整句忽然自己就通了。你说不清是哪天通的，也说不出通的那个瞬间发生了什么。</p>
+<p>编程也是这样。</p>
+<p>前两周，你会觉得每个符号都眼熟，每一行都要查。然后某一天，你看着一段完全陌生的代码，忽然知道它在干什么。</p>
+<p>那一天会来。但它不会提前通知你，所以你不能用“我还没通”来判断自己该不该继续。</p>
+<p>还有一件事，我要在这里说清楚，因为你在翻开这本书之前，大概最担心的就是这个：</p>
+<p><strong>这一章，你见到数学了吗？</strong></p>
+<p>没有。一个都没有。</p>
+<p>整本书里，你需要的数学能力是：会比较大小，会数数，知道什么叫“一半”。就这三样。</p>
+<p>你之所以觉得自己“数学不好所以学不会编程”，是因为你见过的所有编程材料，都是写给喜欢数学的人看的。它们用数列讲循环，用素数讲判断，用斐波那契讲递归——不是因为这些例子更好，是因为写书的人自己喜欢。</p>
+<p>这本书用作文、诗词、病句、成绩单讲。不是因为它更简单，是因为<strong>它更像你</strong>。</p>
+<h2 id="s9">卡住了怎么办</h2>
+<p>三个错误，今晚你至少会遇到一个。</p>
+<p><strong>一、<code>SyntaxError</code>，一串英文，看不懂。</strong>九成是标点。中文的引号、括号、逗号、冒号，机器一个都不认。把输入法切到英文，重新把那一行的标点打一遍。</p>
+<p><strong>二、括号没配对。</strong><code>print(“你好”</code> 少了一个右括号。数一数，左括号和右括号必须一样多。</p>
+<p><strong>三、少了一个引号，后面全乱。</strong>机器会顺着你的引号一路找下去，把后面几行都当成“字”，然后报一个看起来完全不相关位置的错。</p>
+<p>处理原则有两条，都很重要：</p>
+<p><strong>报错信息，从最后一行往上看。</strong> 最后一行告诉你是什么病，上面几行告诉你病在哪。就像改病句，先看它说“成分残缺”，再找缺的是哪个成分。</p>
+<p><strong>卡住二十分钟，就站起来。</strong> 去倒杯水，看看窗外。这个问题不会因为你盯着它而变简单，但你的脑子会因为走开而换个角度。这不是放弃，这是方法。</p>
+<p>还有一句：<strong>把报错信息复制下来去搜索，是专业做法，不是作弊。</strong> 全世界每一个程序员，每天都要搜索十几次报错信息。包括那些你以为什么都懂的人。</p>
+<h2 id="s10">本章你多了什么本事</h2>
+<p>三句话，都是人话：</p>
+<p class="li">你能让计算机，说一句你想说的话。</p>
+<p class="li">你能给一段文字起个名字，然后反复用它。</p>
+<p class="li">你能数出一段文字有多少个字，某个字出现了多少次。</p>
+<h2 id="s11">明天可以拿去办公室说的一句话</h2>
+<p>“我昨天写了个程序，把我们班五十篇作文里'然后'数了一遍，平均一篇 11 次。”</p>
+<p>注意这句话的杀伤力在哪里：不在“我在学编程”，在那个具体的数字。</p>
+<h2 id="s12">下一章</h2>
+<p>这一章，机器只会“说”。</p>
+<p>下一章开始，它会开始<strong>判断</strong>——它会区分：这个字是不是“的”，这篇作文够不够 800 字，这个学生到底交没交。</p>
+<p>那是“如果”的登场。而“如果”，是你最熟悉的句式。</p>
+</article>
+<p class="colophon">本书正文持续写作中。</p></main>
+</body>
+</html>
